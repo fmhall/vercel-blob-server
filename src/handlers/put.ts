@@ -18,10 +18,25 @@ export default defineHandler({
       cacheControl = 'max-age=31536000';
     }
 
+    // Get pathname from URL path, or fallback to query parameter if path is just "/"
+    let pathname = url.pathname;
+    if (pathname === '/' && url.searchParams.has('pathname')) {
+      pathname = decodeURIComponent(url.searchParams.get('pathname')!);
+      // Ensure pathname starts with "/"
+      if (!pathname.startsWith('/')) {
+        pathname = '/' + pathname;
+      }
+    }
+
+    // Ensure we have a valid pathname (not just "/")
+    if (pathname === '/') {
+      return new Response('Invalid pathname: pathname cannot be empty or just "/"', { status: 400 });
+    }
+
     const data = {
-      url: url,
-      downloadUrl: new URL('?download=1', url).toString(),
-      pathname: url.pathname,
+      url: new URL(pathname, url.origin),
+      downloadUrl: new URL(pathname + '?download=1', url.origin).toString(),
+      pathname: pathname,
       size: blob.size,
       contentType,
       cacheControl,
@@ -29,13 +44,13 @@ export default defineHandler({
       contentDisposition,
     };
 
-    await Bun.write(path.join(storePath, url.pathname), blob, { createPath: true });
-    await Bun.write(path.join(storePath, url.pathname + '._vercel_mock_meta_'), JSON.stringify(data, undefined, 2), { createPath: true });
+    await Bun.write(path.join(storePath, pathname), blob, { createPath: true });
+    await Bun.write(path.join(storePath, pathname + '._vercel_mock_meta_'), JSON.stringify(data, undefined, 2), { createPath: true });
 
     return Response.json({
-      url: url,
-      downloadUrl: url,
-      pathname: url.pathname,
+      url: new URL(pathname, url.origin),
+      downloadUrl: new URL(pathname, url.origin),
+      pathname: pathname,
       contentType,
       contentDisposition,
     });
