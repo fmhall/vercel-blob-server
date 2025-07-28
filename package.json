@@ -15,10 +15,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bun": "^1.1.13"
+    "bun": "^1.2.19"
   },
   "devDependencies": {
-    "@vercel/blob": "^0.23.3",
+    "@vercel/blob": "^0.23.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
