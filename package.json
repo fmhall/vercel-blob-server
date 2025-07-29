@@ -5,10 +5,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "bun dist/server.js",
+    "start": "bun --verbose dist/server.js",
     "build": "bun src/build.ts",
-    "dev": "PORT=3001 bun src/server.ts --watch",
-    "build:docker": "docker build . --tag vercel-blob-server",
+    "dev": "PORT=6969 bun src/server.ts --watch",
+    "build:docker": "docker build . --tag masonhall/vercel-blob-server",
     "test": "bun test"
   },
   "keywords": [],
